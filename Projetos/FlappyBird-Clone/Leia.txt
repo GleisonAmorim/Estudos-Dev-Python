@@ -1,0 +1,1 @@
+Crie um atalho para o arquivo Flappy.exe na área de trabalho
