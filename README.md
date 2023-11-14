@@ -1,1 +1,1 @@
-# Estudos-Dev-Python
+Arquivos de estudos sobre a linguagem Python
