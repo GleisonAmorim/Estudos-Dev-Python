@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Chat</title>
+    <!-- Adicione os estilos do flet, substitua o caminho se necessário -->
+    <link rel="stylesheet" type="text/css" href="caminho/para/flet.css">
+</head>
+<body>
+
+<div id="app"></div>
+
+<!-- Adicione o script flet, substitua o caminho se necessário -->
+<script type="module" src="caminho/para/flet.js"></script>
+
+<script type="module">
+    // Seu script Python convertido para JavaScript
+    import * as ft from 'caminho/para/flet.js';
+
+    function main(pagina) {
+        // Seu código Python convertido para JavaScript aqui
+        const texto = new ft.Text("Communication"); // Cria um texto exibido na página inicial
+        
+        const nomeUsuario = new ft.TextField({ label: "Digite o seu nome" }); // Campo de input para receber o nome do usuário
+        
+        const chat = new ft.Column(); // Cria uma coluna para o chat
+        
+        function enviarMensagemTunel(informacoes) {
+            chat.controls.push(new ft.Text(informacoes)); // Adiciona ao campo o texto da mensagem enviada
+            pagina.update();
+        }
+        
+        pagina.pubsub.subscribe(enviarMensagemTunel); // Cria um canal para duas pessoas se comunicarem
+        
+        function enviarMensagem(evento) {
+            const textoCampoMensagem = ` ${nomeUsuario.value}: ${campoMensagem.value}`; // Texto do campo de mensagem recebe o valor que foi enviado
+            pagina.pubsub.send_all(textoCampoMensagem);
+            campoMensagem.value = ""; // Limpa o campo mensagem
+            pagina.update();
+        }
+        
+        const campoMensagem = new ft.TextField({
+            label: "Envie sua mensagem",
+            on_submit: enviarMensagem
+        });
+        
+        const botaoEnviar = new ft.ElevatedButton("Enviar", { on_click: enviarMensagem });
+        
+        function entrarChat(evento) {
+            popup.open = false; // Fecha o popup
+            pagina.remove(botaoIniciar); // Remove o botão iniciar chat
+            pagina.add(chat); // Adiciona o chat
+            const linhaMensagem = new ft.Row([campoMensagem, botaoEnviar]); // Adiciona o campo de mensagem e o botão enviar dentro de uma linha
+            pagina.add(linhaMensagem);
+            const texto = `${nomeUsuario.value} entrou no chat`;
+            chat.controls.push(new ft.Text(texto));
+            pagina.update();
+        }
+        
+        const popup = new ft.AlertDialog({
+            open: false,
+            modal: true,
+            title: new ft.Text("Bem vind@ ao Communication"),
+            content: nomeUsuario,
+            actions: [new ft.ElevatedButton("Entrar", { on_click: entrarChat })]
+        });
+
+        function iniciarChat(evento) {
+            pagina.dialog = popup;
+            popup.open = true;
+            pagina.update();
+        }
+
+        const botaoIniciar = new ft.ElevatedButton("Iniciar Chat", { on_click: iniciarChat });
+
+        pagina.add(texto); // Adiciona o texto à página inicial   
+        pagina.add(botaoIniciar); // Adiciona o botão iniciar chat
+    }
+
+    ft.app(main, { view: ft.WEB_BROWSER });
+</script>
+
+</body>
+</html>
